@@ -44,3 +44,7 @@ http://sonoff/cm?cmnd=Power%20Off
   "hostname": "The hostname of the Sonoff device"
 }
 ```
+
+# Cache
+
+Original plug-in was failing a lot in getState/setState with 'No response', adding cache helps to alleviate that.
