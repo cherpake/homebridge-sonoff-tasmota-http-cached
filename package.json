@@ -21,10 +21,10 @@
   "devDependencies": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cherpake/homebridge-sonoff-tasmota-http.git"
+    "url": "git+https://github.com/cherpake/homebridge-sonoff-tasmota-http-cached.git"
   },
   "bugs": {
-    "url": "https://github.com/cherpake/homebridge-sonoff-tasmota-http.git/issues"
+    "url": "https://github.com/cherpake/homebridge-sonoff-tasmota-http-cached.git/issues"
   },
-  "homepage": "https://github.com/cherpake/homebridge-sonoff-tasmota-http.git#readme"
+  "homepage": "https://github.com/cherpake/homebridge-sonoff-tasmota-http-cached.git#readme"
 }
