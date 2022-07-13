@@ -24,7 +24,7 @@ function SonoffTasmotaHTTPAccessory(log, config) {
   .on('get', this.getState.bind(this))
   .on('set', this.setState.bind(this));
   
-  this.log("Sonoff Tasmota HTTP Initialized")
+  this.log.info("Sonoff Tasmota HTTP Initialized")
 }
 
 SonoffTasmotaHTTPAccessory.prototype.getState = function(callback) {
@@ -54,18 +54,18 @@ SonoffTasmotaHTTPAccessory.prototype.getServices = function() {
 }
 
 function readState(that, retry) {
-  that.log("Sonoff Tasmota HTTP Updating...");
+  that.log.info("Sonoff Tasmota HTTP Updating...");
   request("http://" + that.hostname + "/cm?user=admin&password=" + that.password + "&cmnd=Power" + that.relay, function(error, response, body) {
     // Don't give up on first attempt, try up to 3 times
     if (error) {
 	  if (retry < 3) {
-	  that.log("Sonoff Tasmota HTTP Error (retry: "+ retry +"): " + error);
+	  that.log.error("Sonoff Tasmota HTTP Error (retry: "+ retry +"): " + error);
     	readState(retry + 1);
       }
       return;
     }
     var sonoff_reply = JSON.parse(body); // {"POWER":"ON"}
-    that.log("Sonoff HTTP: " + that.hostname + ", Relay " + that.relay + ", Get State: " + JSON.stringify(sonoff_reply));
+    that.log.info("Sonoff HTTP: " + that.hostname + ", Relay " + that.relay + ", Get State: " + JSON.stringify(sonoff_reply));
     switch (sonoff_reply["POWER" + that.relay]) {
       case "ON":
         that.cachedState = "ON";
@@ -86,13 +86,13 @@ function writeState(that, state, retry) {
 	// Don't give up on first attempt, try up to 3 times
     if (error) {
 	  if (retry < 3) {
-	    that.log("Sonoff Tasmota HTTP Error (retry: "+ retry +"): " + error);
+	    that.log.error("Sonoff Tasmota HTTP Error (retry: "+ retry +"): " + error);
     	writeState(that, state, retry + 1);
       }
       return;
     }    
     var sonoff_reply = JSON.parse(body); // {"POWER":"ON"}
-    that.log("Sonoff HTTP: " + that.hostname + ", Relay " + that.relay + ", Set State: " + JSON.stringify(sonoff_reply));
+    that.log.info("Sonoff HTTP: " + that.hostname + ", Relay " + that.relay + ", Set State: " + JSON.stringify(sonoff_reply));
     switch (sonoff_reply["POWER" + that.relay]) {
       case "ON":
         that.cachedState = "ON";
