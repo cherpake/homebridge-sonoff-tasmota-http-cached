@@ -58,11 +58,11 @@ function readState(that, retry) {
     request("http://" + that.hostname + "/cm?user=admin&password=" + that.password + "&cmnd=Power" + that.relay, function(error, response, body) {
         // Don't give up on first attempt, try up to 3 times
         if (error) {
-            if (retry < 3) {
+            if (retry <= 3) {
                 console.error("Sonoff Tasmota HTTP Error (retry: "+ retry +"): " + error);
                 setTimeout(function() {
                     readState(retry + 1);
-                }, retry * 1000);
+                }, (retry+1) * 1000);
             }
             return;
         }
@@ -88,11 +88,11 @@ function writeState(that, state, retry) {
 	request("http://" + that.hostname + "/cm?user=admin&password=" + that.password + "&cmnd=Power" + that.relay + newstate, function(error, response, body) {
 		// Don't give up on first attempt, try up to 3 times
 		if (error) {
-			if (retry < 3) {
+			if (retry <= 3) {
 				console.error("Sonoff Tasmota HTTP Error (retry: "+ retry +"): " + error);
 				setTimeout(function() {
 					writeState(that, state, retry + 1);
-				}, retry * 1000);
+				}, (retry+1) * 1000);
 			}
 			return;
 		}
