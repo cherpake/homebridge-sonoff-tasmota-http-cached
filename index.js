@@ -54,7 +54,7 @@ SonoffTasmotaHTTPAccessory.prototype.getServices = function() {
 }
 
 function readState(that, retry) {
-    console.info("Sonoff Tasmota HTTP Updating...");
+    console.info("Sonoff Tasmota HTTP Reading...");
     request("http://" + that.hostname + "/cm?user=admin&password=" + that.password + "&cmnd=Power" + that.relay, function(error, response, body) {
         // Don't give up on first attempt, try up to 3 times
         if (error) {
@@ -83,30 +83,30 @@ function readState(that, retry) {
 
 function writeState(that, state, retry) {
     var newstate = "%20Off"
-    if (state) newstate = "%20On" {
-        request("http://" + that.hostname + "/cm?user=admin&password=" + that.password + "&cmnd=Power" + that.relay + newstate, function(error, response, body) {
-            // Don't give up on first attempt, try up to 3 times
-            if (error) {
-                if (retry < 3) {
-                    console.error("Sonoff Tasmota HTTP Error (retry: "+ retry +"): " + error);
-                    setTimeout(function() {
-                        writeState(that, state, retry + 1);
-                    }, retry * 1000);
-                }
-                return;
-            }
-            var sonoff_reply = JSON.parse(body); // {"POWER":"ON"}
-            console.info("Sonoff HTTP: " + that.hostname + ", Relay " + that.relay + ", Set State: " + JSON.stringify(sonoff_reply));
-            switch (sonoff_reply["POWER" + that.relay]) {
-                case "ON":
-                    that.cachedState = "ON";
-                    that.service.updateCharacteristic(Characteristic.On, 1);
-                    break;
-                case "OFF":
-                    that.cachedState = "OFF";
-                    that.service.updateCharacteristic(Characteristic.On, 0);
-                    break;
-            }
-        })
-    }
+    if (state) newstate = "%20On" 
+        console.info("Sonoff Tasmota HTTP Writing...");
+	request("http://" + that.hostname + "/cm?user=admin&password=" + that.password + "&cmnd=Power" + that.relay + newstate, function(error, response, body) {
+		// Don't give up on first attempt, try up to 3 times
+		if (error) {
+			if (retry < 3) {
+				console.error("Sonoff Tasmota HTTP Error (retry: "+ retry +"): " + error);
+				setTimeout(function() {
+					writeState(that, state, retry + 1);
+				}, retry * 1000);
+			}
+			return;
+		}
+		var sonoff_reply = JSON.parse(body); // {"POWER":"ON"}
+		console.info("Sonoff HTTP: " + that.hostname + ", Relay " + that.relay + ", Set State: " + JSON.stringify(sonoff_reply));
+		switch (sonoff_reply["POWER" + that.relay]) {
+			case "ON":
+				that.cachedState = "ON";
+				that.service.updateCharacteristic(Characteristic.On, 1);
+				break;
+			case "OFF":
+				that.cachedState = "OFF";
+				that.service.updateCharacteristic(Characteristic.On, 0);
+				break;
+		}
+	})    
 }
